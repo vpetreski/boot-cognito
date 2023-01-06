@@ -1,4 +1,4 @@
-# Boot-Cognito
+# Boot-Cognito 🔒
 
 Secure REST API via AWS Cognito. You can see it in action [here](https://app.screencast.com/0DP4kaa4OvfXO).
 
@@ -19,7 +19,7 @@ And then edit `src/main/resources/application-private.yml` and populate it with 
 
 execute `./mvnw spring-boot:run`
 
-The easiest way to test it is using postman:
+The easiest way to test it is using Postman:
 
 ![](./img/1.png)
 
