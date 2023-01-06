@@ -12,7 +12,7 @@ Secure REST API via AWS Cognito. You can see it in action [here](https://app.scr
 Configure sensitive configuration:
 
 ```shell
-cp src/main/resources/application.yml.template src/main/resources/application-private.yml 
+cp src/main/resources/application-private.yml.template src/main/resources/application-private.yml 
 ```
 
 And then edit `src/main/resources/application-private.yml` and populate it with your secrets and configuration for Cognito.
