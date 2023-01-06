@@ -1,1 +1,13 @@
-
+server:
+  port: 9994
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            scope: openid
+            redirect-uri: http://localhost:9994
+        provider:
+          cognito:
+            user-name-attribute: cognito:username
