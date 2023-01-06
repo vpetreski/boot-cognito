@@ -26,6 +26,7 @@ The easiest way to test it is using Postman:
 ![](./img/2.png)
 
 ^ `Auth URL` is in format `https://<SUB_DOMAIN>.auth.<REGION>.amazoncognito.com/login`
+
 ^ `Access Token URL` is in format `https://<SUB_DOMAIN>.auth.<REGION>.amazoncognito.com/oauth2/token`
 
 ![](./img/3.png)
