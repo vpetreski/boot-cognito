@@ -1,13 +1,16 @@
 package io.vanja.cognito.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
 
 @Data
-@Accessors(/*fluent = true,*/ chain = true)
+@Accessors(fluent = true)
+@Getter(onMethod = @__(@JsonProperty))
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result {
     private String message;

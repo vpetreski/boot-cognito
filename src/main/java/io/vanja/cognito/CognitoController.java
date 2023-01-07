@@ -58,16 +58,14 @@ public class CognitoController {
                 .build(), HttpResponse.BodyHandlers.ofString()).body(), UserInfo.class);
 
         Result result = new Result()
-                .setName(userInfo.getGivenName() + " " + userInfo.getFamilyName())
-                .setGrantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-                .setScopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList())
-                .setVid(includeVid ? userInfo.getVid() : null);
-
-        System.out.println(result.setMessage(msg));
+                .name(userInfo.getGivenName() + " " + userInfo.getFamilyName())
+                .grantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .scopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList())
+                .vid(includeVid ? userInfo.getVid() : null);
 
         List<String> groups = (List<String>) principal.getTokenAttributes().get("cognito:groups");
         return checkGroup && (groups == null || !groups.contains("VENDOR")) ||
-                includeVid && (result.getVid() == null || !result.getVid().equalsIgnoreCase(CORRECT_VID)) ?
-                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result.setMessage(msg));
+                includeVid && (result.vid() == null || !result.vid().equalsIgnoreCase(CORRECT_VID)) ?
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result.message(msg));
     }
 }
