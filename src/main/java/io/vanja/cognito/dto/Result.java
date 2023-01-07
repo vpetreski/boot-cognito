@@ -2,10 +2,12 @@ package io.vanja.cognito.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
 @Data
+@Accessors(fluent = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result {
     private String message;
@@ -19,10 +21,5 @@ public class Result {
 
     public Result(String message) {
         this.message = message;
-    }
-
-    public Result setMessage(String message) {
-        this.message = message;
-        return this;
     }
 }

@@ -51,25 +51,21 @@ public class CognitoController {
 
     @SneakyThrows
     private ResponseEntity<Result> buildResponse(JwtAuthenticationToken principal, boolean checkGroup, boolean includeVid, String msg) {
-        Result result = new Result();
-
-        HttpRequest request = HttpRequest.newBuilder()
+        UserInfo userInfo = GSON.fromJson(HTTP_CLIENT.send(HttpRequest.newBuilder()
                 .uri(new URI(userInfoUrl))
                 .header("Authorization", "Bearer " + ((Jwt) principal.getPrincipal()).getTokenValue())
                 .GET()
-                .build();
-        HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-        UserInfo userInfo = GSON.fromJson(response.body(), UserInfo.class);
+                .build(), HttpResponse.BodyHandlers.ofString()).body(), UserInfo.class);
 
-        result.setName(userInfo.getGivenName() + " " + userInfo.getFamilyName());
-        result.setGrantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
-        result.setScopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList());
-        result.setVid(includeVid ? userInfo.getVid() : null);
+        Result result = new Result()
+                .name(userInfo.getGivenName() + " " + userInfo.getFamilyName())
+                .grantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .scopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList())
+                .vid(includeVid ? userInfo.getVid() : null);
 
         List<String> groups = (List<String>) principal.getTokenAttributes().get("cognito:groups");
-
         return checkGroup && (groups == null || !groups.contains("VENDOR")) ||
-                includeVid && (result.getVid() == null || !result.getVid().equalsIgnoreCase(CORRECT_VID)) ?
-                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result.setMessage(msg));
+                includeVid && (result.vid() == null || !result.vid().equalsIgnoreCase(CORRECT_VID)) ?
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result.message(msg));
     }
 }
