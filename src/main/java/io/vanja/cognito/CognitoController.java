@@ -85,7 +85,6 @@ class UserInfo {
 @Data
 @Accessors(fluent = true)
 @Getter(onMethod = @__(@JsonProperty))
-@NoArgsConstructor
 @RequiredArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class Result {
