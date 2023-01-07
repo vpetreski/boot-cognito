@@ -60,6 +60,7 @@ public class CognitoController {
                 .build(), HttpResponse.BodyHandlers.ofString()).body(), UserInfo.class);
 
         Result result = new Result()
+                .message(msg)
                 .name(userInfo.getGivenName() + " " + userInfo.getFamilyName())
                 .grantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .scopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList())
@@ -68,7 +69,7 @@ public class CognitoController {
         List<String> groups = (List<String>) principal.getTokenAttributes().get("cognito:groups");
         return checkGroup && (groups == null || !groups.contains("VENDOR")) ||
                 includeVid && (result.vid() == null || !result.vid().equalsIgnoreCase(CORRECT_VID)) ?
-                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result.message(msg));
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result);
     }
 }
 
