@@ -31,9 +31,11 @@ The easiest way to test it is using Postman:
 
 ![](./img/3.png)
 
-## Notes
+## Important Notes
 
 - Since we are here using `Access Token` and not `ID Token`, we have to make additional API call to Cognito to fetch user details / attributes (name, surname, vid)
 - Instead of fetching `UserInfo` in controllers, we could extend Spring Security to populate custom user details
 - Instead of checking for `VENDOR` and `VID` in controllers, we could implement a filter in security configuration to protect relevant endpoints
 - No mapping has been done between Cognito groups and Spring's granted authorities, if we want to use Cognito's groups as Spring Security Roles then proper mapper should be implemented
+
+**So basically, this solution is doing manual authorization checks for VENDOR group and VID attribute for demonstration purposes only, but in real life production scenario this should be automated in a cross cutting way as explained above!**
