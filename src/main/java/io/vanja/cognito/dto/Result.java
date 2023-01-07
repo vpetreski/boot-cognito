@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 @Data
-@Accessors(fluent = true)
+@Accessors(/*fluent = true,*/ chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result {
     private String message;
