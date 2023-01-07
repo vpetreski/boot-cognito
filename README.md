@@ -35,5 +35,5 @@ The easiest way to test it is using Postman:
 
 - Since we are using `Access Token` and not `ID Token`, we have to make API call to Cognito to fetch user details / attributes
 - Potential improvement ^ in real life scenario would be to implement login method in our backend and then by decoding the `ID Token` we wouldn't need to make additional call for user info / attributes
-- Instead of fetching `UserInfo` in controllers, we could implement a filter in security configuration to populate custom user details
+- Instead of fetching `UserInfo` in controllers, we could extend Spring Security to populate custom user details
 - Instead of checking for `VENDOR` and `VID` in controllers, we could implement a filter in security configuration to protect relevant endpoints 
