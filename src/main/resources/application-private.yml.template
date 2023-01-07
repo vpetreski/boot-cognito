@@ -10,5 +10,4 @@ spring:
         provider:
           cognito:
             issuerUri: https://cognito-idp.<REGION>.amazonaws.com/<POOL_ID>
-app:
-  user-info-url: https://<SUB_DOMAIN>.auth.<REGION>.amazoncognito.com/oauth2/userInfo
+            user-info-uri: https://<SUB_DOMAIN>.auth.<REGION>.amazoncognito.com/oauth2/userInfo

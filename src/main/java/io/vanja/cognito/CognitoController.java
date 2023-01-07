@@ -25,7 +25,7 @@ public class CognitoController {
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final Gson GSON = new Gson();
 
-    @Value("${app.user-info-url}")
+    @Value("${spring.security.oauth2.client.provider.cognito.user-info-uri}")
     private String userInfoUrl;
 
     @GetMapping("/unauthenticated")
