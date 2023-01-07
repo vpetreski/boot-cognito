@@ -24,79 +24,52 @@ import java.util.List;
 public class CognitoController {
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final Gson GSON = new Gson();
+    private static final String CORRECT_VID = "2cc40d4d-36c7-4c60-b15c-761dded8abb5";
 
     @Value("${spring.security.oauth2.client.provider.cognito.user-info-uri}")
     private String userInfoUrl;
 
     @GetMapping("/unauthenticated")
     public Result authenticated() {
-        return new Result();
+        return new Result("Free for all to see");
     }
 
     @GetMapping("/authenticated")
-    public Result unauthenticated(JwtAuthenticationToken principal) {
-        Result result = buildResult(principal);
-        result.setGroups(null);
-        result.setVid(null);
-        return result;
+    public ResponseEntity<Result> unauthenticated(JwtAuthenticationToken principal) {
+        return buildResponse(principal, false, false, "Free for all to see");
     }
 
     @GetMapping("/vendor-only")
     public ResponseEntity<Result> vendorOnly(JwtAuthenticationToken principal) {
-        Result result = buildResult(principal);
-
-        if (!groupOk(result)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        result.setMessage("You're a vendor now!");
-        result.setGroups(null);
-        result.setVid(null);
-
-        return ResponseEntity.ok(result);
+        return buildResponse(principal, true, false, "You're a vendor now!");
     }
 
     @GetMapping("/vendor-vid-only")
     public ResponseEntity<Result> vendorVidOnly(JwtAuthenticationToken principal) {
-        Result result = buildResult(principal);
-
-        if (!groupOk(result) || !vidOk(result)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        result.setMessage("Looks like you're a specific vendor!");
-        result.setGroups(null);
-
-        return ResponseEntity.ok(result);
-    }
-
-    private Result buildResult(JwtAuthenticationToken principal) {
-        Result r = new Result();
-        r.setGrantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
-        r.setScopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList());
-        UserInfo userInfo = fetchUserInfo(principal);
-        r.setName(userInfo.getGivenName() + " " + userInfo.getFamilyName());
-        r.setVid(userInfo.getVid());
-        r.setGroups((List<String>) principal.getTokenAttributes().get("cognito:groups"));
-        return r;
+        return buildResponse(principal, true, true, "Looks like you're a specific vendor!");
     }
 
     @SneakyThrows
-    private UserInfo fetchUserInfo(JwtAuthenticationToken principal) {
+    private ResponseEntity<Result> buildResponse(JwtAuthenticationToken principal, boolean checkGroup, boolean includeVid, String msg) {
+        Result result = new Result();
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(userInfoUrl))
                 .header("Authorization", "Bearer " + ((Jwt) principal.getPrincipal()).getTokenValue())
                 .GET()
                 .build();
         HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-        return GSON.fromJson(response.body(), UserInfo.class);
-    }
+        UserInfo userInfo = GSON.fromJson(response.body(), UserInfo.class);
 
-    private boolean groupOk(Result result) {
-        return result.getGroups() != null && result.getGroups().contains("VENDOR");
-    }
+        result.setName(userInfo.getGivenName() + " " + userInfo.getFamilyName());
+        result.setGrantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+        result.setScopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList());
+        result.setVid(includeVid ? userInfo.getVid() : null);
 
-    private boolean vidOk(Result result) {
-        return result.getVid() != null && result.getVid().equalsIgnoreCase("2cc40d4d-36c7-4c60-b15c-761dded8abb5");
+        List<String> groups = (List<String>) principal.getTokenAttributes().get("cognito:groups");
+
+        return checkGroup && (groups == null || !groups.contains("VENDOR")) ||
+                includeVid && (result.getVid() == null || !result.getVid().equalsIgnoreCase(CORRECT_VID)) ?
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result.setMessage(msg));
     }
 }
