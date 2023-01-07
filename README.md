@@ -33,8 +33,7 @@ The easiest way to test it is using Postman:
 
 ## Notes
 
-- Since we are using `Access Token` and not `ID Token`, we have to make API call to Cognito to fetch user details / attributes
-- Potential improvement ^ in real life scenario would be to implement login method in our backend and then by decoding the `ID Token` we wouldn't need to make additional call for user info / attributes
+- Since we are here using `Access Token` and not `ID Token`, we have to make additional API call to Cognito to fetch user details / attributes (name, surname, vid)
 - Instead of fetching `UserInfo` in controllers, we could extend Spring Security to populate custom user details
 - Instead of checking for `VENDOR` and `VID` in controllers, we could implement a filter in security configuration to protect relevant endpoints
 - No mapping has been done between Cognito groups and Spring's granted authorities, if we want to use Cognito's groups as Spring Security Roles then proper mapper should be implemented
