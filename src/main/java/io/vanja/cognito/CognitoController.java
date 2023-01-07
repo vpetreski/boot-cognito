@@ -59,8 +59,7 @@ public class CognitoController {
                 .GET()
                 .build(), HttpResponse.BodyHandlers.ofString()).body(), UserInfo.class);
 
-        Result result = new Result()
-                .message(msg)
+        Result result = new Result(msg)
                 .name(userInfo.getGivenName() + " " + userInfo.getFamilyName())
                 .grantedAuthorities(principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .scopes(Arrays.stream(((String) principal.getTokenAttributes().get("scope")).split(" ")).toList())
