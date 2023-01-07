@@ -22,32 +22,6 @@ import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 
-@Data
-class UserInfo {
-    @SerializedName(value = "given_name")
-    private String givenName;
-    @SerializedName(value = "family_name")
-    private String familyName;
-    @SerializedName(value = "custom:vid")
-    private String vid;
-}
-
-@Data
-@Accessors(fluent = true)
-@Getter(onMethod = @__(@JsonProperty))
-@NoArgsConstructor
-@RequiredArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-class Result {
-    @NonNull
-    private String message;
-    private String vid;
-    private String name;
-    private List<String> grantedAuthorities;
-    private List<String> scopes;
-}
-
-
 @RestController
 public class CognitoController {
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
@@ -96,4 +70,29 @@ public class CognitoController {
                 includeVid && (result.vid() == null || !result.vid().equalsIgnoreCase(CORRECT_VID)) ?
                 ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(result.message(msg));
     }
+}
+
+@Data
+class UserInfo {
+    @SerializedName(value = "given_name")
+    private String givenName;
+    @SerializedName(value = "family_name")
+    private String familyName;
+    @SerializedName(value = "custom:vid")
+    private String vid;
+}
+
+@Data
+@Accessors(fluent = true)
+@Getter(onMethod = @__(@JsonProperty))
+@NoArgsConstructor
+@RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+class Result {
+    @NonNull
+    private String message;
+    private String vid;
+    private String name;
+    private List<String> grantedAuthorities;
+    private List<String> scopes;
 }
