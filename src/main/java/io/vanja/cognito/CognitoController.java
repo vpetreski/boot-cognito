@@ -1,9 +1,11 @@
 package io.vanja.cognito;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
-import io.vanja.cognito.dto.Result;
-import io.vanja.cognito.dto.UserInfo;
-import lombok.SneakyThrows;
+import com.google.gson.annotations.SerializedName;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,32 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+
+@Data
+class UserInfo {
+    @SerializedName(value = "given_name")
+    private String givenName;
+    @SerializedName(value = "family_name")
+    private String familyName;
+    @SerializedName(value = "custom:vid")
+    private String vid;
+}
+
+@Data
+@Accessors(fluent = true)
+@Getter(onMethod = @__(@JsonProperty))
+@NoArgsConstructor
+@RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+class Result {
+    @NonNull
+    private String message;
+    private String vid;
+    private String name;
+    private List<String> grantedAuthorities;
+    private List<String> scopes;
+}
+
 
 @RestController
 public class CognitoController {

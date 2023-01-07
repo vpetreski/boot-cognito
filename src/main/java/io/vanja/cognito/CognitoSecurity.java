@@ -12,7 +12,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class CognitoSecurity {
     @Value("${spring.security.oauth2.client.provider.cognito.issuerUri}")
     private String issuer;
 
