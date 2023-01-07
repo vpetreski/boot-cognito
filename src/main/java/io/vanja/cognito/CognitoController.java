@@ -32,12 +32,12 @@ public class CognitoController {
     private String userInfoUrl;
 
     @GetMapping("/unauthenticated")
-    public Result authenticated() {
+    public Result unauthenticated() {
         return new Result("Free for all to see");
     }
 
     @GetMapping("/authenticated")
-    public ResponseEntity<Result> unauthenticated(JwtAuthenticationToken principal) {
+    public ResponseEntity<Result> authenticated(JwtAuthenticationToken principal) {
         return buildResponse(principal, false, false, "Free for all to see");
     }
 
