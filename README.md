@@ -33,5 +33,5 @@ The easiest way to test it is using Postman:
 
 ## Potential Improvements
 
-- Instead of fetching `UserInfo` in controllers, we could implement a filter in security configuration to populate custom user details
+- Instead of fetching `UserInfo` in controllers, we could extend Spring Security to populate custom user details
 - Instead of checking for `VENDOR` and `VID` in controllers, we could implement a filter in security configuration to protect relevant endpoints 
